@@ -13,7 +13,7 @@
 	],
 	"require" : {
 		"php" : ">7.0",
-		"phpmv/ubiquity": "dev-master"
+		"phpmv/ubiquity": "dev-nosql-prepare"
 	},
 	"license" : "Apache-2.0",
 	"authors" : [{
