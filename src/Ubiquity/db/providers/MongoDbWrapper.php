@@ -33,7 +33,7 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		}
 	}
 
-	public function getAvailableDrivers() {
+	public static function getAvailableDrivers() {
 		return [
 			'mongodb'
 		];
