@@ -70,7 +70,7 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		$listdatabases = new \MongoDB\Driver\Command([
 			"listCollections" => 1
 		]);
-		$collections = $manager->executeCommand($this->dbName, $listdatabases);
+		$collections = $this->dbInstance->executeCommand($this->dbName, $listdatabases);
 		$res = [];
 		foreach ($collections as $collection) {
 			$res[] = $collection['name'];
