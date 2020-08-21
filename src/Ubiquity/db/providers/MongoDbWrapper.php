@@ -66,7 +66,7 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		return $this->dbInstance->executeBulkWrite($collectionName, $bulk);
 	}
 
-	public function getTableNames() {
+	public function getTablesName() {
 		$listdatabases = new \MongoDB\Driver\Command([
 			"listCollections" => 1
 		]);
