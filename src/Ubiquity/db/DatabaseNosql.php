@@ -3,6 +3,10 @@ namespace Ubiquity\db;
 
 class DatabaseNosql extends AbstractDatabase {
 
+	public function _connect() {
+		$this->wrapperObject->connect($this->dbType, $this->dbName, $this->serverName, $this->port, $this->user, $this->password, $this->options);
+	}
+
 	public function query(string $collectionName, array $criteres = []) {
 		return $this->wrapperObject->query($collectionName, $criteres);
 	}
