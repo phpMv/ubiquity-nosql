@@ -14,6 +14,19 @@ class DAONosql {
 	use DAOCommonTrait;
 
 	/**
+	 * Establishes the connection to the database using the $config array
+	 *
+	 * @param array $config
+	 *        	the config array (Startup::getConfig())
+	 */
+	public static function startDatabase(&$config, $offset = null) {
+		$db = $offset ? ($config['database'][$offset] ?? ($config['database'] ?? [])) : ($config['database']['default'] ?? $config['database']);
+		if ($db['dbName'] !== '') {
+			self::connect($offset ?? 'default', $db['wrapper'] ?? \Ubiquity\db\providers\MongoDbWrapper::class, $db['type'], $db['dbName'], $db['serverName'] ?? '127.0.0.1', $db['port'] ?? 27017, $db['user'] ?? '', $db['password'] ?? '', $db['options'] ?? [], $db['cache'] ?? false);
+		}
+	}
+
+	/**
 	 * Establishes the connection to the database using the past parameters
 	 *
 	 * @param string $offset
