@@ -73,7 +73,9 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		$collections = $this->dbInstance->executeCommand($this->dbName, $listdatabases);
 		$res = [];
 		foreach ($collections as $collection) {
-			$res[] = $collection['name'];
+			if (\substr($collection->name, 0, 1) !== '_') {
+				$res[] = $collection->name;
+			}
 		}
 		return $res;
 	}
