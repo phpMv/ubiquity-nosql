@@ -14,5 +14,13 @@ class DatabaseNosql extends AbstractDatabase {
 	public function update(string $collectionName, $filter = [], $newValues = [], $options = []) {
 		return $this->wrapperObject->update($collectionName, $filter, $newValues, $options);
 	}
+
+	public function getTableNames() {
+		return $this->wrapperObject->getTableNames();
+	}
+
+	public function getFieldsInfos($collectionName) {
+		return $this->wrapperObject->getFieldsInfos($collectionName);
+	}
 }
 

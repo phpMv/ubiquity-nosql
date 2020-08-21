@@ -65,5 +65,32 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		$bulk->update($filter, $newValues, $options);
 		return $this->dbInstance->executeBulkWrite($collectionName, $bulk);
 	}
+
+	public function getTableNames() {
+		$listdatabases = new \MongoDB\Driver\Command([
+			"listCollections" => 1
+		]);
+		$collections = $manager->executeCommand($this->dbName, $listdatabases);
+		$res = [];
+		foreach ($collections as $collection) {
+			$res[] = $collection['name'];
+		}
+		return $res;
+	}
+
+	public function getFieldsInfos($collectionName) {
+		$query = $this->query($collectionName)->toArray();
+		$res = [];
+		if (\count($query) > 0) {
+			$row = \current($query);
+			foreach ($row as $field => $value) {
+				$res[$field] = [
+					'Type' => gettype($value),
+					'Nullable' => true
+				];
+			}
+		}
+		return $res;
+	}
 }
 
