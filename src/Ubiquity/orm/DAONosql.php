@@ -9,9 +9,10 @@ use Ubiquity\exceptions\DAOException;
 use Ubiquity\log\Logger;
 use Ubiquity\orm\parser\Reflexion;
 use Ubiquity\orm\traits\DAOCommonTrait;
+use Ubiquity\orm\traits\DAOPooling;
 
 class DAONosql {
-	use DAOCommonTrait;
+	use DAOCommonTrait,DAOPooling;
 
 	/**
 	 * Establishes the connection to the database using the $config array
