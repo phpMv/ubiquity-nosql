@@ -22,5 +22,13 @@ class DatabaseNosql extends AbstractDatabase {
 	public function getFieldsInfos($collectionName) {
 		return $this->wrapperObject->getFieldsInfos($collectionName);
 	}
+
+	public function getPrimaryKeys($collectionName) {
+		return [];
+	}
+
+	public function getForeignKeys($collectionName, $pkName, $dbName = null) {
+		return [];
+	}
 }
 
