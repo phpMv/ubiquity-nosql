@@ -126,9 +126,9 @@ class DAONosql {
 		$metaDatas = OrmUtils::getModelMetadata($className);
 		$tableName = $metaDatas['#tableName'];
 		$transformers = $metaDatas['#transformers'][self::$transformerOp] ?? [];
-		$query = $db->query($tableName, $params);
-		if ($query) {
-			$object = self::_loadObjectFromRow($db, $query, $className, $metaDatas['#memberNames'] ?? null, $metaDatas['#accessors'], $transformers);
+		$query = $db->query($tableName, $params)->toArray();
+		if (\count($query) > 0) {
+			$object = self::_loadObjectFromRow($db, \current($query), $className, $metaDatas['#memberNames'] ?? null, $metaDatas['#accessors'], $transformers);
 			EventsManager::trigger(DAOEvents::GET_ONE, $object, $className);
 		}
 		return $object;
