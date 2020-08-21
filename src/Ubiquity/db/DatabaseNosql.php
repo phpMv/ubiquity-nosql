@@ -16,7 +16,7 @@ class DatabaseNosql extends AbstractDatabase {
 	}
 
 	public function getTablesName() {
-		return $this->wrapperObject->getTableNames();
+		return $this->wrapperObject->getTablesName();
 	}
 
 	public function getFieldsInfos($collectionName) {
