@@ -41,10 +41,14 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 
 	public function connect($dbType, $dbName, $serverName, $port, $user, $password, array $options) {
 		$this->dbName = $dbName;
-		$this->dbInstance = new \MongoDB\Driver\Manager("mongodb://$serverName:$port", [
-			'username' => $user,
-			'password' => $password
-		], $options);
+		$auth = [];
+		if ($user != '') {
+			$auth = [
+				'username' => $user,
+				'password' => $password
+			];
+		}
+		$this->dbInstance = new \MongoDB\Driver\Manager("mongodb://$serverName:$port", $auth, $options);
 	}
 
 	public function query(string $collectionName, array $criteres = []) {
