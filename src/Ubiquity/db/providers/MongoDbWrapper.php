@@ -57,7 +57,13 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 	}
 
 	public function count(string $collectionName, array $criteres = []) {
-		return \count($this->query($collectionName, $criteres)->toArray());
+		$command = new \MongoDB\Driver\Command([
+			'count' => $collectionName,
+			'query' => $criteres
+		]);
+
+		$cursor = $this->dbInstance->executeCommand($this->dbName, $command);
+		return $cursor->toArray()[0]->n;
 	}
 
 	public function update(string $collectionName, $filter = [], $newValues = [], $options = []) {
