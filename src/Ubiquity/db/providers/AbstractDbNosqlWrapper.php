@@ -15,6 +15,10 @@ abstract class AbstractDbNosqlWrapper extends AbstractDbWrapper_ {
 
 	abstract public function getFieldsInfos(string $collectionName);
 
+	abstract public function getPrimaryKeys($collectionName);
+
+	abstract public function getForeignKeys($collectionName, $pkName, $dbName);
+
 	abstract public function getRowNum(string $collectionName, string $field, $value): int;
 
 	abstract public function paginate(string $collectionName, int $page = 1, int $rowsPerPage = 20, array $criteres = []);

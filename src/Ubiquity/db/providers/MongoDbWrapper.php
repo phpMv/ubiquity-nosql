@@ -126,7 +126,7 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		return $res;
 	}
 
-	public function getForeignKeys($collectionName, $pkName) {
+	public function getForeignKeys($collectionName, $pkName, $dbName) {
 		$collectionNames = $this->getTablesName();
 		foreach ($collectionNames as $collection) {
 			$query = $this->query($collection)->toArray();
