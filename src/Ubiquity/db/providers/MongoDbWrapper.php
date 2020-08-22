@@ -1,6 +1,8 @@
 <?php
 namespace Ubiquity\db\providers;
 
+use Ubiquity\utils\base\UString;
+
 /**
  * MongoDb wrapper class.
  * Ubiquity\db\providers$MongoDbWrapper
@@ -100,6 +102,47 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 					'Type' => gettype($value),
 					'Nullable' => true
 				];
+			}
+		}
+		return $res;
+	}
+
+	public function getPrimaryKeys($collectionName) {
+		$query = $this->query($collectionName)->toArray();
+		$res = [];
+		if (\count($query) > 0) {
+			$row = \current($query);
+			foreach ($row as $field => $value) {
+				if (\substr($field, 0, 3) === '_id') {
+					return [
+						'_id'
+					];
+				}
+				if (\substr($field, 0, 2) === 'id') {
+					$res[] = $field;
+				}
+			}
+		}
+		return $res;
+	}
+
+	public function getForeignKeys($collectionName, $pkName) {
+		$collectionNames = $this->getTablesName();
+		foreach ($collectionNames as $collection) {
+			$query = $this->query($collection)->toArray();
+			$res = [];
+			if (\count($query) > 0) {
+				$row = \current($query);
+				$fk = $collectionName . \ucfirst($pkName);
+				$fkReverse = $pkName . \ucfirst($collectionName);
+				foreach ($row as $field => $value) {
+					if ($field === $fk || $field === $fkReverse) {
+						$res[] = [
+							'TABLE_NAME' => $collection,
+							'COLUMN_NAME' => $field
+						];
+					}
+				}
 			}
 		}
 		return $res;
