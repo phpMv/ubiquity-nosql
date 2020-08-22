@@ -15,6 +15,10 @@ class DatabaseNosql extends AbstractDatabase {
 		return $this->wrapperObject->update($collectionName, $filter, $newValues, $options);
 	}
 
+	public function count(string $collectionName, array $criteres = []) {
+		return $this->wrapperObject->count($collectionName, $criteres);
+	}
+
 	public function getTablesName() {
 		return $this->wrapperObject->getTablesName();
 	}

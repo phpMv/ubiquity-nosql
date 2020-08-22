@@ -56,6 +56,10 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		return $this->dbInstance->executeQuery($this->dbName . "." . $collectionName, $query);
 	}
 
+	public function count(string $collectionName, array $criteres = []) {
+		return \count($this->query($collectionName, $criteres)->toArray());
+	}
+
 	public function update(string $collectionName, $filter = [], $newValues = [], $options = []) {
 		$options = array_merge([
 			'multi' => false,

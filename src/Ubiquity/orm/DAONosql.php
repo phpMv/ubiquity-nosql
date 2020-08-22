@@ -120,6 +120,12 @@ class DAONosql {
 		return static::_getAll($db, $className, $parameters, $useCache);
 	}
 
+	public static function count($className, $parameters = []) {
+		$db = self::getDb($className);
+		$tableName = OrmUtils::getTableName($className);
+		return $db->count($tableName, $parameters);
+	}
+
 	protected static function _getOne(DatabaseNosql $db, $className, $params, $useCache) {
 		$object = null;
 
