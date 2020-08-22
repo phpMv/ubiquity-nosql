@@ -90,7 +90,7 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		return $res;
 	}
 
-	public function getFieldsInfos($collectionName) {
+	public function getFieldsInfos(string $collectionName) {
 		$query = $this->query($collectionName)->toArray();
 		$res = [];
 		if (\count($query) > 0) {
@@ -103,6 +103,14 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 			}
 		}
 		return $res;
+	}
+
+	public function getRowNum(string $collectionName, string $field, $value): int {
+		return $this->count($collectionName, [
+			$field => [
+				'$lt' => $value
+			]
+		]);
 	}
 }
 
