@@ -22,5 +22,9 @@ abstract class AbstractDbNosqlWrapper extends AbstractDbWrapper_ {
 	abstract public function getRowNum(string $collectionName, string $field, $value): int;
 
 	abstract public function paginate(string $collectionName, int $page = 1, int $rowsPerPage = 20, array $criteres = []);
+
+	abstract public function toUpdate(string $collectionName, $filter = [], $newValues = [], $options = []);
+
+	abstract public function flushUpdates($collectionName);
 }
 

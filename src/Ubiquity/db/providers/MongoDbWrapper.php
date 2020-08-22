@@ -16,7 +16,31 @@ use Ubiquity\utils\base\UString;
  */
 class MongoDbWrapper extends AbstractDbNosqlWrapper {
 
+	protected static $bulks = [
+		'insert' => [],
+		'update' => [],
+		'delete' => []
+	];
+
 	protected $dbName;
+
+	protected function getBulk($operation, $collectionName) {
+		return self::$bulks[$operation][$collectionName] ?? new \MongoDB\Driver\BulkWrite();
+	}
+
+	public function toUpdate(string $collectionName, $filter = [], $newValues = [], $options = []) {
+		$options = array_merge([
+			'multi' => false,
+			'upsert' => false
+		], $options);
+		self::getBulk('update', $collectionName)->update($filter, [
+			'$set' => $newValues
+		], $options);
+	}
+
+	public function flushUpdates($collectionName) {
+		return $this->dbInstance->executeBulkWrite($collectionName, self::getBulk('update', $collectionName));
+	}
 
 	public function getDSN($serverName, $port, $dbName, $dbType = '') {
 		return "mongodb://$serverName:$port";
@@ -74,7 +98,9 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 			'upsert' => false
 		], $options);
 		$bulk = new \MongoDB\Driver\BulkWrite();
-		$bulk->update($filter, $newValues, $options);
+		$bulk->update($filter, [
+			'$set' => $newValues
+		], $options);
 		return $this->dbInstance->executeBulkWrite($collectionName, $bulk);
 	}
 
