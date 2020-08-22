@@ -222,5 +222,20 @@ class DAONosql {
 		}
 		return false;
 	}
+
+	public static function toUpdate($instance) {
+		$className = \get_class($instance);
+		$db = self::getDb($className);
+		$tableName = OrmUtils::getTableName($className);
+		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance);
+		$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
+		return $db->toUpdate($tableName, $keyFieldsAndValues, $ColumnskeyAndValues);
+	}
+
+	public static function flushUpdates($className) {
+		$db = self::getDb($className);
+		$tableName = OrmUtils::getTableName($className);
+		return $db->flushUpdates($tableName);
+	}
 }
 
