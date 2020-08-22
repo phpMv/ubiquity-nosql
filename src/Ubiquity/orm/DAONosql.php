@@ -229,6 +229,7 @@ class DAONosql {
 		$tableName = OrmUtils::getTableName($className);
 		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance);
 		$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
+		$instance->_rest = \array_merge($instance->_rest, $ColumnskeyAndValues);
 		return $db->toUpdate($tableName, $keyFieldsAndValues, $ColumnskeyAndValues);
 	}
 
