@@ -51,9 +51,9 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		$this->dbInstance = new \MongoDB\Driver\Manager("mongodb://$serverName:$port", $auth, $options);
 	}
 
-	public function query(string $collectionName, array $criteres = []) {
+	public function query(string $collectionName, array $criteres = [], array $options = []) {
 		$query = new \MongoDB\Driver\Query($criteres);
-		return $this->dbInstance->executeQuery($this->dbName . "." . $collectionName, $query);
+		return $this->dbInstance->executeQuery($this->dbName . "." . $collectionName, $query, $options);
 	}
 
 	public function count(string $collectionName, array $criteres = []) {
@@ -110,6 +110,13 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 			$field => [
 				'$lt' => $value
 			]
+		]);
+	}
+
+	public function paginate(string $collectionName, int $page = 1, int $rowsPerPage = 20, array $criteres = []) {
+		return $this->query($collectionName, $criteres, [
+			'skip' => (($page - 1) * $rowsPerPage),
+			'limit' => $rowsPerPage
 		]);
 	}
 }

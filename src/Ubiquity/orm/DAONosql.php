@@ -126,6 +126,12 @@ class DAONosql {
 		return $db->count($tableName, $parameters);
 	}
 
+	public static function paginate($className, $page = 1, $rowsPerPage = 20, $parameters = [], $useCache = NULL) {
+		$db = self::getDb($className);
+		$tableName = OrmUtils::getTableName($className);
+		return $db->paginate($tableName, $page, $rowsPerPage, $parameters, $useCache);
+	}
+
 	protected static function _getOne(DatabaseNosql $db, $className, $params, $useCache) {
 		$object = null;
 
