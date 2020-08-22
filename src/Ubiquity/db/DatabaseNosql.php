@@ -28,11 +28,19 @@ class DatabaseNosql extends AbstractDatabase {
 	}
 
 	public function getPrimaryKeys($collectionName) {
-		return [];
+		return $this->wrapperObject->getPrimaryKeys($collectionName);
 	}
 
 	public function getForeignKeys($collectionName, $pkName, $dbName = null) {
-		return [];
+		return $this->wrapperObject->getForeignKeys($collectionName, $pkName, $dbName);
+	}
+
+	public function toUpdate(string $collectionName, $filter = [], $newValues = [], $options = []) {
+		return $this->wrapperObject->toUpdate($collectionName, $filter, $newValues, $options);
+	}
+
+	public function flushUpdates(string $collectionName) {
+		return $this->wrapperObject->flushUpdates($collectionName);
 	}
 }
 

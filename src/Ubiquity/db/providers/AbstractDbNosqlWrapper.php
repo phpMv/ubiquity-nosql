@@ -25,6 +25,6 @@ abstract class AbstractDbNosqlWrapper extends AbstractDbWrapper_ {
 
 	abstract public function toUpdate(string $collectionName, $filter = [], $newValues = [], $options = []);
 
-	abstract public function flushUpdates($collectionName);
+	abstract public function flushUpdates(string $collectionName);
 }
 
