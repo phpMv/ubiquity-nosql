@@ -224,7 +224,7 @@ class DAONosql {
 	}
 
 	public static function toUpdate($bId, $instance) {
-		$db = self::getDb($className);
+		$db = self::getDb(\get_class($instance));
 		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance, NULL, true);
 		$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
 		$instance->_rest = \array_merge($instance->_rest, $ColumnskeyAndValues);
