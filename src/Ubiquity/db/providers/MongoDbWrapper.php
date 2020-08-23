@@ -30,7 +30,7 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		], $options);
 	}
 
-	public function startBulk($collectionName) {
+	public function startBulk(string $collectionName) {
 		$id = \uniqid();
 		self::$bulks[$id] = [
 			'collection' => $collectionName,
@@ -39,7 +39,7 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		return $id;
 	}
 
-	public function flush($id) {
+	public function flush(string $id) {
 		return $this->dbInstance->executeBulkWrite($this->dbName . '.' . self::$bulks[$id]['collection'], self::$bulks[$id]['bulk']);
 	}
 
