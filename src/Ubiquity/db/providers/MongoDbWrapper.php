@@ -16,38 +16,39 @@ use Ubiquity\utils\base\UString;
  */
 class MongoDbWrapper extends AbstractDbNosqlWrapper {
 
-	protected static $bulks = [];
+	protected static $bulks = [
+		'insert' => [],
+		'update' => [],
+		'delete' => []
+	];
 
 	protected $dbName;
 
-	protected function getUniqid() {
-		do {
-			$id = \uniqid();
-		} while (isset(self::$bulks[$id]));
-		return $id;
+	protected function getBulk($operation, $collectionName) {
+		return self::$bulks[$operation][$collectionName] ??= [
+			'bulk' => new \MongoDB\Driver\BulkWrite(),
+			'session' => $this->dbInstance->startSession()
+		];
 	}
 
-	public function toUpdate(string $id, $filter = [], $newValues = [], $options = []) {
+	public function toUpdate(string $collectionName, $filter = [], $newValues = [], $options = []) {
 		$options = array_merge([
 			'multi' => false,
 			'upsert' => false
 		], $options);
-		self::$bulks[$id]['bulk']->update($filter, [
+
+		self::getBulk('update', $collectionName)['bulk']->update($filter, [
 			'$set' => $newValues
 		], $options);
 	}
 
-	public function startBulk(string $collectionName) {
-		$id = self::getUniqid();
-		self::$bulks[$id] = [
-			'collection' => $collectionName,
-			'bulk' => new \MongoDB\Driver\BulkWrite()
-		];
-		return $id;
-	}
-
-	public function flush(string $id) {
-		return $this->dbInstance->executeBulkWrite($this->dbName . '.' . self::$bulks[$id]['collection'], self::$bulks[$id]['bulk']);
+	public function flushUpdates($collectionName) {
+		$bulk = self::getBulk('update', $collectionName);
+		$result = $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, $bulk['bulk'], [
+			'session' => $bulk['session']
+		]);
+		self::$bulks['update'][$collectionName] = null;
+		return $result;
 	}
 
 	public function getDSN($serverName, $port, $dbName, $dbType = '') {

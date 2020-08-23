@@ -14,8 +14,6 @@ use Ubiquity\orm\traits\DAOPooling;
 class DAONosql {
 	use DAOCommonTrait,DAOPooling;
 
-	protected static $bulkDbs = [];
-
 	/**
 	 * Establishes the connection to the database using the $config array
 	 *
@@ -225,25 +223,20 @@ class DAONosql {
 		return false;
 	}
 
-	public static function toUpdate($bId, $instance) {
+	public static function toUpdate($instance) {
+		$className = \get_class($instance);
+		$db = self::getDb($className);
+		$tableName = OrmUtils::getTableName($className);
 		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance, NULL, true);
 		$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
 		$instance->_rest = \array_merge($instance->_rest, $ColumnskeyAndValues);
-		return self::$bulkDbs[$bId]->toUpdate($bId, $keyFieldsAndValues, $ColumnskeyAndValues);
+		return $db->toUpdate($tableName, $keyFieldsAndValues, $ColumnskeyAndValues);
 	}
 
-	public static function flush($bId) {
-		$res = self::$bulkDbs[$bId]->flush($bId);
-		unset(self::$bulkDbs[$bId]);
-		return $res;
-	}
-
-	public static function startBulk(string $className) {
+	public static function flushUpdates($className) {
 		$db = self::getDb($className);
 		$tableName = OrmUtils::getTableName($className);
-		$bId = $db->startBulk($tableName);
-		self::$bulkDbs[$bId] = $db;
-		return $bId;
+		return $db->flushUpdates($tableName);
 	}
 }
 
