@@ -25,7 +25,7 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 	protected $dbName;
 
 	protected function getBulk($operation, $collectionName) {
-		return self::$bulks[$operation][$collectionName] ?? new \MongoDB\Driver\BulkWrite();
+		return self::$bulks[$operation][$collectionName] ??= new \MongoDB\Driver\BulkWrite();
 	}
 
 	public function toUpdate(string $collectionName, $filter = [], $newValues = [], $options = []) {
