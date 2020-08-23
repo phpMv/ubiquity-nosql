@@ -214,8 +214,8 @@ class DAONosql {
 		}
 		try {
 			$result = $db->update($tableName, $keyFieldsAndValues, $ColumnskeyAndValues);
-			EventsManager::trigger(DAOEvents::AFTER_UPDATE, $instance, $result);
 			$instance->_rest = \array_merge($instance->_rest, $ColumnskeyAndValues);
+			EventsManager::trigger(DAOEvents::AFTER_UPDATE, $instance, $result);
 			return $result;
 		} catch (\Exception $e) {
 			Logger::warn("DAOUpdates", $e->getMessage(), "update");
