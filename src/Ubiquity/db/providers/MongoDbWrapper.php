@@ -25,10 +25,7 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 	protected $dbName;
 
 	protected function getBulk($operation, $collectionName) {
-		return self::$bulks[$operation][$collectionName] ??= [
-			'bulk' => new \MongoDB\Driver\BulkWrite(),
-			'session' => $this->dbInstance->startSession()
-		];
+		return self::$bulks[$operation][$collectionName] ??= new \MongoDB\Driver\BulkWrite();
 	}
 
 	public function toUpdate(string $collectionName, $filter = [], $newValues = [], $options = []) {
@@ -37,16 +34,13 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 			'upsert' => false
 		], $options);
 
-		self::getBulk('update', $collectionName)['bulk']->update($filter, [
+		self::getBulk('update', $collectionName)->update($filter, [
 			'$set' => $newValues
 		], $options);
 	}
 
 	public function flushUpdates($collectionName) {
-		$bulk = self::getBulk('update', $collectionName);
-		$result = $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, $bulk['bulk'], [
-			'session' => $bulk['session']
-		]);
+		$result = $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, self::getBulk('update', $collectionName));
 		self::$bulks['update'][$collectionName] = null;
 		return $result;
 	}
