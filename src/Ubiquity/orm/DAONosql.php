@@ -233,7 +233,7 @@ class DAONosql {
 	}
 
 	public static function flush($bId) {
-		$res = self::$bulkDbs[$bId]->flushUpdates($bId);
+		$res = self::$bulkDbs[$bId]->flush($bId);
 		unset(self::$bulkDbs[$bId]);
 		return $res;
 	}
