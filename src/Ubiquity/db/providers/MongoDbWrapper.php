@@ -34,7 +34,7 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 			'upsert' => false
 		], $options);
 		self::getBulk('update', $collectionName)->update($filter, [
-			'$set' => \json_encode($newValues)
+			'$set' => $newValues
 		], $options);
 	}
 
