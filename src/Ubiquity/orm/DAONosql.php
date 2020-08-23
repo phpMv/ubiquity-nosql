@@ -209,7 +209,7 @@ class DAONosql {
 		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance, NULL, true);
 		$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
 		if (Logger::isActive()) {
-			Logger::info("DAOUpdates", $sql, "update");
+			Logger::info("DAOUpdates", \json_encode($keyFieldsAndValues), "update");
 			Logger::info("DAOUpdates", \json_encode($ColumnskeyAndValues), "Key and values");
 		}
 		try {
