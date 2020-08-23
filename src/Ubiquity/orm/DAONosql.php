@@ -223,20 +223,21 @@ class DAONosql {
 		return false;
 	}
 
-	public static function toUpdate($instance) {
-		$className = \get_class($instance);
-		$db = self::getDb($className);
-		$tableName = OrmUtils::getTableName($className);
+	public static function toUpdate($bId, $instance) {
 		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance, NULL, true);
 		$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
 		$instance->_rest = \array_merge($instance->_rest, $ColumnskeyAndValues);
-		return $db->toUpdate($tableName, $keyFieldsAndValues, $ColumnskeyAndValues);
+		return $db->toUpdate($bId, $keyFieldsAndValues, $ColumnskeyAndValues);
 	}
 
-	public static function flushUpdates($className) {
+	public static function flush($bId) {
+		return $db->flushUpdates($bId);
+	}
+
+	public function startBulk(string $className) {
 		$db = self::getDb($className);
 		$tableName = OrmUtils::getTableName($className);
-		return $db->flushUpdates($tableName);
+		return $db->startBulk($tableName);
 	}
 }
 
