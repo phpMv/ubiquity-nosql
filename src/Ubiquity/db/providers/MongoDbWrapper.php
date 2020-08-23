@@ -20,6 +20,13 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 
 	protected $dbName;
 
+	protected function getUniqid() {
+		do {
+			$id = \uniqid();
+		} while (isset(self::$bulks[$id]));
+		return $id;
+	}
+
 	public function toUpdate(string $id, $filter = [], $newValues = [], $options = []) {
 		$options = array_merge([
 			'multi' => false,
@@ -31,7 +38,7 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 	}
 
 	public function startBulk(string $collectionName) {
-		$id = \uniqid();
+		$id = self::getUniqid();
 		self::$bulks[$id] = [
 			'collection' => $collectionName,
 			'bulk' => new \MongoDB\Driver\BulkWrite()
