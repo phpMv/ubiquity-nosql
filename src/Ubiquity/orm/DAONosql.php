@@ -206,7 +206,7 @@ class DAONosql {
 		$className = \get_class($instance);
 		$db = self::getDb($className);
 		$tableName = OrmUtils::getTableName($className);
-		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance);
+		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance, NULL, true);
 		$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
 		if (Logger::isActive()) {
 			Logger::info("DAOUpdates", $sql, "update");
@@ -227,7 +227,7 @@ class DAONosql {
 		$className = \get_class($instance);
 		$db = self::getDb($className);
 		$tableName = OrmUtils::getTableName($className);
-		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance);
+		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance, NULL, true);
 		$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
 		$instance->_rest = \array_merge($instance->_rest, $ColumnskeyAndValues);
 		return $db->toUpdate($tableName, $keyFieldsAndValues, $ColumnskeyAndValues);
