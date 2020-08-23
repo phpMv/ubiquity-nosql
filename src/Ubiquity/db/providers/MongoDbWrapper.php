@@ -39,7 +39,9 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 	}
 
 	public function flushUpdates($collectionName) {
-		return $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, self::getBulk('update', $collectionName));
+		$result = $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, self::getBulk('update', $collectionName));
+		self::$bulks['update'][$collectionName] = null;
+		return $result;
 	}
 
 	public function getDSN($serverName, $port, $dbName, $dbType = '') {
