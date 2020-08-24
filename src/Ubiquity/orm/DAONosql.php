@@ -234,13 +234,12 @@ class DAONosql {
 		if (\count($ColumnskeyAndValues) > 0) {
 			$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
 			$instance->_rest = \array_merge($instance->_rest, $ColumnskeyAndValues);
+			$className = \get_class($instance);
+			$db = self::getDb($className);
 			if (isset($bulkId)) {
 				return $db->toUpdate($bulkId, $keyFieldsAndValues, $ColumnskeyAndValues);
 			}
-			$className = \get_class($instance);
-			$db = self::getDb($className);
-			$tableName = OrmUtils::getTableName($className);
-			return $db->toUpdate($tableName, $keyFieldsAndValues, $ColumnskeyAndValues);
+			return $db->toUpdate(OrmUtils::getTableName($className), $keyFieldsAndValues, $ColumnskeyAndValues);
 		}
 		return false;
 	}
