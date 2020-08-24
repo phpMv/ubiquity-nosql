@@ -31,14 +31,16 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 	}
 
 	public function toUpdate(string $collectionName, $filter = [], $newValues = [], $options = []) {
-		$options = array_merge([
-			'multi' => false,
-			'upsert' => false
-		], $options);
+		if (\count($newValues) > 0) {
+			$options = array_merge([
+				'multi' => false,
+				'upsert' => false
+			], $options);
 
-		self::getBulk('update', $collectionName)->update($filter, [
-			'$set' => $newValues
-		], $options);
+			self::getBulk('update', $collectionName)->update($filter, [
+				'$set' => $newValues
+			], $options);
+		}
 	}
 
 	public function flushUpdates($collectionName) {
