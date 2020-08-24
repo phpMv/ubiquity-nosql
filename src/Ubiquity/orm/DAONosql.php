@@ -245,10 +245,10 @@ class DAONosql {
 	}
 
 	public static function flush($idOrClassName, bool $byId = true) {
+		$db = self::getDb($idOrClassName);
 		if ($byId) {
 			return $db->flush($idOrClassName, true);
 		}
-		$db = self::getDb($idOrClassName);
 		$tableName = OrmUtils::getTableName($idOrClassName);
 		return $db->flush($tableName, false);
 	}
