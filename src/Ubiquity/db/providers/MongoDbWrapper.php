@@ -42,8 +42,7 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 	}
 
 	public function flushUpdates($collectionName) {
-		$writeConcern = new \MongoDB\Driver\WriteConcern(\MongoDB\Driver\WriteConcern::MAJORITY, 1000);
-		$result = $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, self::getBulk('update', $collectionName), $writeConcern);
+		$result = $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, self::getBulk('update', $collectionName));
 		self::$bulks['update'][$collectionName] = null;
 		return $result;
 	}
