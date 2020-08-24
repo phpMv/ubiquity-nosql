@@ -223,7 +223,7 @@ class DAONosql {
 		return false;
 	}
 
-	public function startBulk(string $className, array $options = []) {
+	public static function startBulk(string $className, array $options = []) {
 		$tableName = OrmUtils::getTableName($className);
 		$db = self::getDb($className);
 		return $db->startBulk($tableName, $options);
