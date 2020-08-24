@@ -16,36 +16,49 @@ use Ubiquity\utils\base\UString;
  */
 class MongoDbWrapper extends AbstractDbNosqlWrapper {
 
-	protected static $bulks = [
-		'insert' => [],
-		'update' => [],
-		'delete' => []
-	];
+	protected static $bulks = [];
+
+	protected static $idBulks = [];
 
 	protected $dbName;
 
-	protected function getBulk($operation, $collectionName) {
-		return self::$bulks[$operation][$collectionName] ??= new \MongoDB\Driver\BulkWrite([
-			'ordered' => false
-		]);
+	protected function getBulk($collectionName, $id = null) {
+		$id ??= $collectionName;
+		return self::$bulks[$id] ??= [
+			'collection' => $collectionName,
+			'bulk' => new \MongoDB\Driver\BulkWrite([
+				'ordered' => false
+			])
+		];
 	}
 
-	public function toUpdate(string $collectionName, $filter = [], $newValues = [], $options = []) {
+	public function startBulk(string $collectionName) {
+		$id = \uniqid();
+		self::getBulk($collectionName, $id);
+		return $id;
+	}
+
+	public function toUpdate(string $idOrCollectionName, array $filter = [], array $newValues = [], array $options = []) {
 		if (\count($newValues) > 0) {
 			$options = array_merge([
 				'multi' => false,
 				'upsert' => false
 			], $options);
 
-			self::getBulk('update', $collectionName)->update($filter, [
+			self::getBulk($idOrCollectionName)['bulk']->update($filter, [
 				'$set' => $newValues
 			], $options);
 		}
 	}
 
-	public function flushUpdates($collectionName) {
-		$result = $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, self::getBulk('update', $collectionName));
-		unset(self::$bulks['update'][$collectionName]);
+	public function flush(string $idOrCollectionName, bool $byId = true) {
+		$collectionName = $idOrCollectionName;
+		$bulk = self::getBulk($idOrCollectionName);
+		if ($byId) {
+			$collectionName = $bulk['collection'];
+		}
+		$result = $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, $bulk['bulk']);
+		unset(self::$bulks[$idOrCollectionName]);
 		return $result;
 	}
 

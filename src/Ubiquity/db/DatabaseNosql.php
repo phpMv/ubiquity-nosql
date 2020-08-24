@@ -35,12 +35,12 @@ class DatabaseNosql extends AbstractDatabase {
 		return $this->wrapperObject->getForeignKeys($collectionName, $pkName, $dbName);
 	}
 
-	public function toUpdate(string $collectionName, $filter = [], $newValues = [], $options = []) {
-		return $this->wrapperObject->toUpdate($collectionName, $filter, $newValues, $options);
+	public function toUpdate(string $idOrcollectionName, $filter = [], $newValues = [], $options = []) {
+		return $this->wrapperObject->toUpdate($idOrcollectionName, $filter, $newValues, $options);
 	}
 
-	public function flushUpdates(string $collectionName) {
-		return $this->wrapperObject->flushUpdates($collectionName);
+	public function flush(string $collectionName, bool $byId = true) {
+		return $this->wrapperObject->flush($collectionName, $byId);
 	}
 }
 
