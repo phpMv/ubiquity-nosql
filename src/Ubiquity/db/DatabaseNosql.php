@@ -35,8 +35,8 @@ class DatabaseNosql extends AbstractDatabase {
 		return $this->wrapperObject->getForeignKeys($collectionName, $pkName, $dbName);
 	}
 
-	public function startBulk(string $collectionName) {
-		return $this->wrapperObject->startBulk($collectionName);
+	public function startBulk(string $collectionName, array $options = []) {
+		return $this->wrapperObject->startBulk($collectionName, $options);
 	}
 
 	public function toUpdate(string $idOrcollectionName, $filter = [], $newValues = [], $options = []) {

@@ -23,7 +23,7 @@ abstract class AbstractDbNosqlWrapper extends AbstractDbWrapper_ {
 
 	abstract public function paginate(string $collectionName, int $page = 1, int $rowsPerPage = 20, array $criteres = []);
 
-	abstract public function startBulk(string $collectionName);
+	abstract public function startBulk(string $collectionName, array $options = []);
 
 	abstract public function toUpdate(string $idOrCollectionName, array $filter = [], array $newValues = [], array $options = []);
 

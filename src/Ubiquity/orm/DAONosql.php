@@ -223,10 +223,10 @@ class DAONosql {
 		return false;
 	}
 
-	public function startBulk(string $className) {
+	public function startBulk(string $className, array $options = []) {
 		$tableName = OrmUtils::getTableName($className);
 		$db = self::getDb($className);
-		return $db->startBulk($tableName);
+		return $db->startBulk($tableName, $options);
 	}
 
 	public static function toUpdate($instance, $bulkId = null) {

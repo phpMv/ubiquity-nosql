@@ -18,13 +18,10 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 
 	protected static $bulks = [];
 
-	protected static $idBulks = [];
-
 	protected $dbName;
 
-	protected function getBulk($collectionName, $id = null) {
-		$id ??= $collectionName;
-		return self::$bulks[$id] ??= [
+	protected function getBulk($collectionName) {
+		return self::$bulks[$collectionName] ??= [
 			'collection' => $collectionName,
 			'bulk' => new \MongoDB\Driver\BulkWrite([
 				'ordered' => false
@@ -32,9 +29,15 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		];
 	}
 
-	public function startBulk(string $collectionName) {
+	public function startBulk(string $collectionName, array $options = []) {
+		$options = \array_merge([
+			'ordered' => false
+		], $options);
 		$id = \uniqid();
-		self::getBulk($collectionName, $id);
+		self::$bulks[$id] = [
+			'collection' => $collectionName,
+			'bulk' => new \MongoDB\Driver\BulkWrite($options)
+		];
 		return $id;
 	}
 
@@ -52,10 +55,11 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 	}
 
 	public function flush(string $idOrCollectionName, bool $byId = true) {
-		$collectionName = $idOrCollectionName;
-		$bulk = self::getBulk($idOrCollectionName);
+		$bulk = self::$bulks[$idOrCollectionName];
 		if ($byId) {
 			$collectionName = $bulk['collection'];
+		} else {
+			$collectionName = $idOrCollectionName;
 		}
 		$result = $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, $bulk['bulk']);
 		unset(self::$bulks[$idOrCollectionName]);
