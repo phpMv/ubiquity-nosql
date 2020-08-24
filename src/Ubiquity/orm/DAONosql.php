@@ -223,6 +223,12 @@ class DAONosql {
 		return false;
 	}
 
+	public function startBulk(string $className) {
+		$tableName = OrmUtils::getTableName($className);
+		$db = self::getDb($className);
+		return $db->startBulk($tableName);
+	}
+
 	public static function toUpdate($instance, $bulkId = null) {
 		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance, NULL, true);
 		if (\count($ColumnskeyAndValues) > 0) {
