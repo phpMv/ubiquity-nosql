@@ -224,11 +224,11 @@ class DAONosql {
 	}
 
 	public static function toUpdate($instance) {
-		$className = \get_class($instance);
-		$db = self::getDb($className);
-		$tableName = OrmUtils::getTableName($className);
 		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance, NULL, true);
 		if (\count($ColumnskeyAndValues) > 0) {
+			$className = \get_class($instance);
+			$db = self::getDb($className);
+			$tableName = OrmUtils::getTableName($className);
 			$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
 			$instance->_rest = \array_merge($instance->_rest, $ColumnskeyAndValues);
 			return $db->toUpdate($tableName, $keyFieldsAndValues, $ColumnskeyAndValues);
