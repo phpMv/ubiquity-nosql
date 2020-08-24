@@ -228,9 +228,12 @@ class DAONosql {
 		$db = self::getDb($className);
 		$tableName = OrmUtils::getTableName($className);
 		$ColumnskeyAndValues = Reflexion::getPropertiesAndValues($instance, NULL, true);
-		$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
-		$instance->_rest = \array_merge($instance->_rest, $ColumnskeyAndValues);
-		return $db->toUpdate($tableName, $keyFieldsAndValues, $ColumnskeyAndValues);
+		if (\count($ColumnskeyAndValues) > 0) {
+			$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
+			$instance->_rest = \array_merge($instance->_rest, $ColumnskeyAndValues);
+			return $db->toUpdate($tableName, $keyFieldsAndValues, $ColumnskeyAndValues);
+		}
+		return false;
 	}
 
 	public static function flushUpdates($className) {
