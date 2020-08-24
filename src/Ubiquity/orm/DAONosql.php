@@ -243,8 +243,8 @@ class DAONosql {
 		if ($byId) {
 			return $db->flush($idOrClassName, true);
 		}
-		$db = self::getDb($className);
-		$tableName = OrmUtils::getTableName($className);
+		$db = self::getDb($idOrClassName);
+		$tableName = OrmUtils::getTableName($idOrClassName);
 		return $db->flush($tableName, false);
 	}
 }
