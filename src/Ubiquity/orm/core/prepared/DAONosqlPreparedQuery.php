@@ -1,6 +1,7 @@
 <?php
 namespace Ubiquity\orm\core\prepared;
 
+use Ubiquity\orm\DAONosql;
 use Ubiquity\orm\OrmUtils;
 
 class DAONosqlPreparedQuery {
@@ -24,7 +25,7 @@ class DAONosqlPreparedQuery {
 	}
 
 	protected function prepare() {
-		$this->db = DAO::getDb($this->className);
+		$this->db = DAONosql::getDb($this->className);
 		$metaDatas = OrmUtils::getModelMetadata($this->className);
 		$this->collectionName = $metaDatas['#tableName'];
 		$this->memberNames = $metaDatas['#memberNames'];
