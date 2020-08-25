@@ -4,7 +4,7 @@ namespace Ubiquity\orm\core\prepared;
 use Ubiquity\orm\OrmUtils;
 use Ubiquity\orm\DAONosql;
 
-class DAONosqlPreparedQuery {
+abstract class DAONosqlPreparedQuery {
 
 	protected $db;
 
@@ -33,5 +33,7 @@ class DAONosqlPreparedQuery {
 			$this->accessors = $metaDatas['#accessors'];
 		}
 	}
+
+	abstract public function execute($params = [], $useCache = false);
 }
 
