@@ -73,10 +73,11 @@ class DAONosql {
 	 *        	complete classname of the model to load
 	 * @param Array|string $keyValues
 	 *        	primary key values or condition
+	 * @param array $options
 	 * @param boolean|null $useCache
 	 * @return object the instance loaded or null if not found
 	 */
-	public static function getById($className, $keyValues, $useCache = NULL) {
+	public static function getById($className, $keyValues, $options = [], $useCache = NULL) {
 		if (! \is_array($keyValues)) {
 			$keyValues = [
 				$keyValues
@@ -89,7 +90,7 @@ class DAONosql {
 				$params[$pk] = $keyValues[$index];
 			}
 		}
-		return static::_getOne(self::getDatabase(self::$modelsDatabase[$className] ?? 'default'), $className, $params, $useCache);
+		return static::_getOne(self::getDatabase(self::$modelsDatabase[$className] ?? 'default'), $className, $params, $options, $useCache);
 	}
 
 	/**
@@ -102,9 +103,9 @@ class DAONosql {
 	 *        	use the active cache if true
 	 * @return array
 	 */
-	public static function getOne($className, $parameters = [], $useCache = NULL) {
+	public static function getOne($className, $parameters = [], $options = [], $useCache = NULL) {
 		$db = self::getDb($className);
-		return static::_getOne($db, $className, $parameters, $useCache);
+		return static::_getOne($db, $className, $parameters, $options, $useCache);
 	}
 
 	/**
@@ -113,13 +114,14 @@ class DAONosql {
 	 * @param string $className
 	 *        	class name of the model to load
 	 * @param array|null $parameters
+	 * @param array $options
 	 * @param boolean $useCache
 	 *        	use the active cache if true
 	 * @return array
 	 */
-	public static function getAll($className, $parameters = [], $useCache = NULL) {
+	public static function getAll($className, $parameters = [], $options = [], $useCache = NULL) {
 		$db = self::getDb($className);
-		return static::_getAll($db, $className, $parameters, $useCache);
+		return static::_getAll($db, $className, $parameters, $options, $useCache);
 	}
 
 	public static function count($className, $parameters = []) {
@@ -134,13 +136,13 @@ class DAONosql {
 		return $db->paginate($tableName, $page, $rowsPerPage, $parameters, $useCache);
 	}
 
-	protected static function _getOne(DatabaseNosql $db, $className, $params, $useCache) {
+	protected static function _getOne(DatabaseNosql $db, $className, $params, $options, $useCache) {
 		$object = null;
 
 		$metaDatas = OrmUtils::getModelMetadata($className);
 		$tableName = $metaDatas['#tableName'];
 		$transformers = $metaDatas['#transformers'][self::$transformerOp] ?? [];
-		$doc = $db->queryOne($tableName, $params);
+		$doc = $db->queryOne($tableName, $params, $options);
 		if ($doc) {
 			$object = self::_loadObjectFromRow($db, $doc, $className, $metaDatas['#memberNames'] ?? null, $metaDatas['#accessors'], $transformers);
 			EventsManager::trigger(DAOEvents::GET_ONE, $object, $className);
@@ -153,16 +155,18 @@ class DAONosql {
 	 * @param DatabaseNosql $db
 	 * @param string $className
 	 * @param array $params
+	 * @param array $options
+	 * @param bool $useCache
 	 * @return array
 	 */
-	protected static function _getAll(DatabaseNosql $db, $className, $params = [], $useCache = NULL) {
+	protected static function _getAll(DatabaseNosql $db, $className, $params = [], $options = [], $useCache = NULL) {
 		$objects = array();
 
 		$metaDatas = OrmUtils::getModelMetadata($className);
 		$tableName = $metaDatas['#tableName'];
 
 		$transformers = $metaDatas['#transformers'][self::$transformerOp] ?? [];
-		$query = $db->query($tableName, $params);
+		$query = $db->query($tableName, $params, $options);
 		$propsKeys = OrmUtils::getPropKeys($className);
 		foreach ($query as $row) {
 			$object = self::_loadObjectFromRow($db, $row, $className, $metaDatas['#memberNames'] ?? null, $metaDatas['#accessors'], $transformers);

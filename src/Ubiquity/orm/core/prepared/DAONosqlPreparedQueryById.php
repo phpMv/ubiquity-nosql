@@ -12,7 +12,7 @@ class DAONosqlPreparedQueryById extends DAONosqlPreparedQueryOne {
 		$this->primaryKeys = OrmUtils::getAnnotationInfo($className, "#primaryKeys");
 	}
 
-	public function execute($keyValues = [], $useCache = false) {
+	public function execute($keyValues = [], $options = [], $useCache = false) {
 		if (! \is_array($keyValues)) {
 			$keyValues = [
 				$keyValues
@@ -24,7 +24,7 @@ class DAONosqlPreparedQueryById extends DAONosqlPreparedQueryOne {
 				$params[$pk] = $keyValues[$index];
 			}
 		}
-		return parent::execute($params, $useCache);
+		return parent::execute($params, $options, $useCache);
 	}
 }
 

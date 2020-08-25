@@ -12,9 +12,9 @@ class DAONosqlPreparedQueryOne extends DAONosqlPreparedQuery {
 		$this->prepare();
 	}
 
-	public function execute($params = [], $useCache = false) {
+	public function execute($params = [], $options = [], $useCache = false) {
 		$object = null;
-		$doc = $this->db->queryOne($this->collectionName, $params);
+		$doc = $this->db->queryOne($this->collectionName, $params, $options);
 		if ($doc) {
 			if ($this->allPublic) {
 				$object = DAONosql::_loadSimpleObjectFromRow($doc, $this->className, $this->memberNames, $this->transformers);

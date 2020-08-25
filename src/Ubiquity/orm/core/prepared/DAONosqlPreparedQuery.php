@@ -34,6 +34,6 @@ abstract class DAONosqlPreparedQuery {
 		}
 	}
 
-	abstract public function execute($params = [], $useCache = false);
+	abstract public function execute($params = [], $options = [], $useCache = false);
 }
 

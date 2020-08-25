@@ -16,9 +16,9 @@ class DAONosqlPreparedQueryAll extends DAONosqlPreparedQuery {
 		$this->prepare();
 	}
 
-	public function execute($params = [], $useCache = false) {
+	public function execute($params = [], $options = [], $useCache = false) {
 		$objects = array();
-		$query = $this->db->query($this->collectionName, $params);
+		$query = $this->db->query($this->collectionName, $params, $options);
 		foreach ($query as $row) {
 			if ($this->allPublic) {
 				$object = DAONosql::_loadSimpleObjectFromRow($row, $this->className, $this->memberNames, $this->transformers);
