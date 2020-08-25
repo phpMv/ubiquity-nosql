@@ -74,6 +74,7 @@ class DAONosql {
 	 * @param Array|string $keyValues
 	 *        	primary key values or condition
 	 * @param array $options
+	 *        	The db query options
 	 * @param boolean|null $useCache
 	 * @return object the instance loaded or null if not found
 	 */
@@ -99,6 +100,8 @@ class DAONosql {
 	 * @param string $className
 	 *        	class name of the model to load
 	 * @param array|null $parameters
+	 * @param array $options
+	 *        	The db query options
 	 * @param boolean $useCache
 	 *        	use the active cache if true
 	 * @return array
@@ -115,6 +118,7 @@ class DAONosql {
 	 *        	class name of the model to load
 	 * @param array|null $parameters
 	 * @param array $options
+	 *        	The db query options
 	 * @param boolean $useCache
 	 *        	use the active cache if true
 	 * @return array
