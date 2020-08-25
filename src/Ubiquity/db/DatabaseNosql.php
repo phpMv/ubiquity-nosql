@@ -7,11 +7,11 @@ class DatabaseNosql extends AbstractDatabase {
 		$this->wrapperObject->connect($this->dbType, $this->dbName, $this->serverName, $this->port, $this->user, $this->password, $this->options);
 	}
 
-	public function query(string $collectionName, array $criteres = [], array $options) {
+	public function query(string $collectionName, array $criteres = [], array $options = []) {
 		return $this->wrapperObject->query($collectionName, $criteres, $options);
 	}
 
-	public function queryOne(string $collectionName, array $criteres = [], array $options) {
+	public function queryOne(string $collectionName, array $criteres = [], array $options = []) {
 		return $this->wrapperObject->queryOne($collectionName, $criteres, $options);
 	}
 
