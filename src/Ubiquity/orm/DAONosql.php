@@ -197,6 +197,26 @@ class DAONosql {
 	}
 
 	/**
+	 *
+	 * @param array $row
+	 * @param string $className
+	 * @param array $memberNames
+	 * @param array $transformers
+	 * @return object
+	 */
+	public static function _loadSimpleObjectFromRow($row, $className, $memberNames, $transformers) {
+		$o = new $className();
+		if (self::$useTransformers) {
+			self::applyTransformers($transformers, $row, $memberNames);
+		}
+		foreach ($row as $k => $v) {
+			$o->$k = $v;
+			$o->_rest[$memberNames[$k] ?? $k] = $v;
+		}
+		return $o;
+	}
+
+	/**
 	 * Updates an existing $instance in the database.
 	 * Be careful not to modify the primary key
 	 *
