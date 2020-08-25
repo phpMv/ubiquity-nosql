@@ -107,14 +107,11 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 	}
 
 	public function queryOne(string $collectionName, array $criteres = [], array $options = []) {
-		$options = array_merge([
+		$query = new \MongoDB\Driver\Query($criteres, [
 			'limit' => 1
-		], $options);
-		$query = new \MongoDB\Driver\Query($criteres, $options);
+		] + $options);
 		$cursor = $this->dbInstance->executeQuery($this->dbName . "." . $collectionName, $query);
-		$it = new \IteratorIterator($cursor);
-		$it->rewind();
-		return $it->current();
+		return \current($cursor->toArray());
 	}
 
 	public function count(string $collectionName, array $criteres = []) {
