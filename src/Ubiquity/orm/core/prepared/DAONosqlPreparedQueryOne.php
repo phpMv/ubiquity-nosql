@@ -12,16 +12,16 @@ class DAONosqlPreparedQueryOne extends DAONosqlPreparedQuery {
 		$this->prepare();
 	}
 
-	public function execute($keyValues = [], $useCache = false) {
+	public function execute($params = [], $useCache = false) {
 		$object = null;
-		$doc = $this->db->queryOne($this->tableName, $params);
+		$doc = $this->db->queryOne($this->collectionName, $params);
 		if ($doc) {
 			if ($this->allPublic) {
-				$object = DAONosql::_loadSimpleObjectFromRow($doc, $className, $this->memberNames, $this->transformers);
+				$object = DAONosql::_loadSimpleObjectFromRow($doc, $this->className, $this->memberNames, $this->transformers);
 			} else {
-				$object = DAONosql::_loadObjectFromRow($db, $doc, $className, $this->memberNames, $this->accessors, $this->transformers);
+				$object = DAONosql::_loadObjectFromRow($this->db, $doc, $this->className, $this->memberNames, $this->accessors, $this->transformers);
 			}
-			EventsManager::trigger(DAOEvents::GET_ONE, $object, $className);
+			EventsManager::trigger(DAOEvents::GET_ONE, $object, $this->className);
 		}
 		return $object;
 	}

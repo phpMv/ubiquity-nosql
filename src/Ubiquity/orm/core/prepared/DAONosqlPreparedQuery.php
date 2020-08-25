@@ -1,8 +1,8 @@
 <?php
 namespace Ubiquity\orm\core\prepared;
 
-use Ubiquity\orm\DAONosql;
 use Ubiquity\orm\OrmUtils;
+use Ubiquity\orm\DAONosql;
 
 class DAONosqlPreparedQuery {
 

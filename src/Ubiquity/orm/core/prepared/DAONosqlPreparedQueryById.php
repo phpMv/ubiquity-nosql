@@ -1,6 +1,8 @@
 <?php
 namespace Ubiquity\orm\core\prepared;
 
+use Ubiquity\orm\OrmUtils;
+
 class DAONosqlPreparedQueryById extends DAONosqlPreparedQueryOne {
 
 	protected $primaryKeys;

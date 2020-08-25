@@ -210,8 +210,11 @@ class DAONosql {
 			self::applyTransformers($transformers, $row, $memberNames);
 		}
 		foreach ($row as $k => $v) {
-			$o->$k = $v;
-			$o->_rest[$memberNames[$k] ?? $k] = $v;
+			$m = $memberNames[$k] ?? $k;
+			if (\property_exists($className, $m)) {
+				$o->$m = $v;
+				$o->_rest[$m] = $v;
+			}
 		}
 		return $o;
 	}
