@@ -14,6 +14,8 @@ use Ubiquity\orm\traits\DAOPooling;
 class DAONosql {
 	use DAOCommonTrait,DAOPooling;
 
+	protected static $bulkDbs = [];
+
 	/**
 	 * Establishes the connection to the database using the $config array
 	 *
@@ -226,7 +228,9 @@ class DAONosql {
 	public static function startBulk(string $className, array $options = []) {
 		$tableName = OrmUtils::getTableName($className);
 		$db = self::getDb($className);
-		return $db->startBulk($tableName, $options);
+		$bId = $db->startBulk($tableName, $options);
+		self::$bulkDbs[$bId] = $db;
+		return $bId;
 	}
 
 	public static function toUpdate($instance, $bulkId = null) {
@@ -234,22 +238,25 @@ class DAONosql {
 		if (\count($ColumnskeyAndValues) > 0) {
 			$keyFieldsAndValues = OrmUtils::getKeyFieldsAndValues($instance);
 			$instance->_rest = \array_merge($instance->_rest, $ColumnskeyAndValues);
-			$className = \get_class($instance);
-			$db = self::getDb($className);
+
 			if (isset($bulkId)) {
+				$db = self::$bulkDbs[$bulkId];
 				return $db->toUpdate($bulkId, $keyFieldsAndValues, $ColumnskeyAndValues);
 			}
+			$className = \get_class($instance);
+			$db = self::getDb($className);
 			return $db->toUpdate(OrmUtils::getTableName($className), $keyFieldsAndValues, $ColumnskeyAndValues);
 		}
 		return false;
 	}
 
-	public static function flush($className, $bulkId = null) {
-		$db = self::getDb($className);
-		if ($bulkId) {
-			return $db->flush($bulkId, true);
+	public static function flush($idOrClassName, bool $byId = true) {
+		if ($byId) {
+			$db = self::$bulkDbs[$idOrClassName];
+			return $db->flush($idOrClassName, true);
 		}
-		$tableName = OrmUtils::getTableName($className);
+		$db = self::getDb($idOrClassName);
+		$tableName = OrmUtils::getTableName($idOrClassName);
 		return $db->flush($tableName, false);
 	}
 }
