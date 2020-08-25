@@ -140,9 +140,9 @@ class DAONosql {
 		$metaDatas = OrmUtils::getModelMetadata($className);
 		$tableName = $metaDatas['#tableName'];
 		$transformers = $metaDatas['#transformers'][self::$transformerOp] ?? [];
-		$query = $db->query($tableName, $params)->toArray();
-		if (\count($query) > 0) {
-			$object = self::_loadObjectFromRow($db, \current($query), $className, $metaDatas['#memberNames'] ?? null, $metaDatas['#accessors'], $transformers);
+		$doc = $db->queryOne($tableName, $params);
+		if ($doc) {
+			$object = self::_loadObjectFromRow($db, $doc, $className, $metaDatas['#memberNames'] ?? null, $metaDatas['#accessors'], $transformers);
 			EventsManager::trigger(DAOEvents::GET_ONE, $object, $className);
 		}
 		return $object;
@@ -184,7 +184,7 @@ class DAONosql {
 	 */
 	public static function _loadObjectFromRow(DatabaseNosql $db, $row, $className, $memberNames, $accessors, $transformers) {
 		$o = new $className();
-		if (self::$useTransformers && $memberNames) { // TOTO to remove
+		if (self::$useTransformers) {
 			self::applyTransformers($transformers, $row, $memberNames);
 		}
 		foreach ($row as $k => $v) {
