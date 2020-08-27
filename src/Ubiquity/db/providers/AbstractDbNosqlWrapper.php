@@ -21,6 +21,8 @@ abstract class AbstractDbNosqlWrapper extends AbstractDbWrapper_ {
 
 	abstract public function getTablesName();
 
+	abstract public function getIndexes(string $collectionName, $unique = true);
+
 	abstract public function getFieldsInfos(string $collectionName);
 
 	abstract public function getPrimaryKeys($collectionName);

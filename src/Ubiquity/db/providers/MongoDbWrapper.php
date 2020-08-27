@@ -114,6 +114,15 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		return \current($cursor->toArray());
 	}
 
+	public function getIndexes(string $collectionName, $unique = true) {
+		$command = new \MongoDB\Driver\Command([
+			'getIndexes' => $collectionName
+		]);
+
+		$cursor = $this->dbInstance->executeCommand($this->dbName, $command);
+		return $cursor->toArray();
+	}
+
 	public function count(string $collectionName, array $criteres = []) {
 		$command = new \MongoDB\Driver\Command([
 			'count' => $collectionName,

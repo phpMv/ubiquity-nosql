@@ -43,6 +43,10 @@ class DatabaseNosql extends AbstractDatabase {
 		return $this->wrapperObject->getPrimaryKeys($collectionName);
 	}
 
+	public function getIndexes(string $collectionName, $unique = true) {
+		return $this->wrapperObject->getIndexes($collectionName, $unique);
+	}
+
 	public function getForeignKeys($collectionName, $pkName, $dbName = null) {
 		return $this->wrapperObject->getForeignKeys($collectionName, $pkName, $dbName);
 	}

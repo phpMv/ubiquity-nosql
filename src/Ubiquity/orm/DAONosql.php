@@ -256,6 +256,113 @@ class DAONosql {
 		return false;
 	}
 
+	/**
+	 * Inserts a new instance $instance into the database
+	 *
+	 * @param object $instance
+	 *        	the instance to insert
+	 */
+	public static function insert($instance) {
+		EventsManager::trigger('dao.before.insert', $instance);
+		$className = \get_class($instance);
+		$db = self::getDb($className);
+		$tableName = OrmUtils::getTableName($className);
+		$keyAndValues = Reflexion::getPropertiesAndValues($instance);
+		$pk = OrmUtils::getFirstKey($className);
+		$pkVal = $keyAndValues[$pk] ?? null;
+		if (($pkVal) == null) {
+			unset($keyAndValues[$pk]);
+		}
+		if (Logger::isActive()) {
+			Logger::info('DAOUpdates', \json_encode($keyFieldsAndValues), 'insert');
+			Logger::info('DAOUpdates', \json_encode($keyAndValues), 'Key and values');
+		}
+
+		try {
+			$result = $db->insert($tableName, $keyAndValues);
+			if ($result) {
+				if ($pkVal == null) {
+					$propKey = OrmUtils::getFirstPropKey($className);
+					$propKey->setValue($instance, $result);
+					$pkVal = $result;
+				}
+				$instance->_rest = $keyAndValues;
+				$instance->_rest[$pk] = $pkVal;
+			}
+			EventsManager::trigger(DAOEvents::AFTER_INSERT, $instance, $result);
+			return $result;
+		} catch (\Exception $e) {
+			Logger::warn('DAOUpdates', $e->getMessage(), 'insert');
+			if (Startup::$config['debug']) {
+				throw $e;
+			}
+		}
+		return false;
+	}
+
+	/**
+	 *
+	 * @param object $instance
+	 * @param boolean $updateMany
+	 * @return boolean|int
+	 */
+	public static function save($instance) {
+		if (isset($instance->_rest)) {
+			return self::update($instance);
+		}
+		return self::insert($instance);
+	}
+
+	/**
+	 * Deletes the object $instance from the database
+	 *
+	 * @param object $instance
+	 *        	instance à supprimer
+	 */
+	public static function remove($instance): ?int {
+		$className = \get_class($instance);
+		$tableName = OrmUtils::getTableName($className);
+		$keyAndValues = OrmUtils::getKeyFieldsAndValues($instance);
+		return self::removeBy_($className, $tableName, $keyAndValues);
+	}
+
+	/**
+	 * Deletes all instances from $modelName corresponding to $ids
+	 *
+	 * @param string $modelName
+	 * @param array $filter
+	 * @return int|boolean
+	 */
+	public static function delete($modelName, $filter) {
+		return self::removeBy_($modelName, OrmUtils::getTableName($modelName), $filter);
+	}
+
+	/**
+	 *
+	 * @param string $className
+	 * @param string $tableName
+	 * @param array $keyAndValues
+	 * @return int the number of rows that were deleted
+	 */
+	private static function removeBy_($className, $tableName, $keyAndValues): ?int {
+		$db = self::getDb($className);
+		Logger::info('DAOUpdates', $tableName, 'delete');
+		try {
+			return $db->delete($tableName, $keyAndValues);
+		} catch (\PDOException $e) {
+			Logger::warn('DAOUpdates', $e->getMessage(), 'delete');
+			return null;
+		}
+		return 0;
+	}
+
+	/**
+	 * Starts a bulk for insert, update or delete operation
+	 *
+	 * @param string $className
+	 * @param array $options
+	 * @return string the bulk id to use with toUpdate and flush
+	 */
 	public static function startBulk(string $className, array $options = []) {
 		$tableName = OrmUtils::getTableName($className);
 		$db = self::getDb($className);
