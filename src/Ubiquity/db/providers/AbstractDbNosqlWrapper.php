@@ -13,6 +13,12 @@ abstract class AbstractDbNosqlWrapper extends AbstractDbWrapper_ {
 
 	abstract public function update(string $collectionName, $filter = [], $newValues = [], $options = []);
 
+	abstract public function upsert(string $collectionName, $filter = [], $newValues = [], $options = []);
+
+	abstract public function insert(string $collectionName, $values = []);
+
+	abstract public function delete(string $collectionName, $filter = [], $options = []);
+
 	abstract public function getTablesName();
 
 	abstract public function getFieldsInfos(string $collectionName);

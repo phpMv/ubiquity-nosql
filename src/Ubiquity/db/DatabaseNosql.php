@@ -15,6 +15,14 @@ class DatabaseNosql extends AbstractDatabase {
 		return $this->wrapperObject->queryOne($collectionName, $criteres, $options);
 	}
 
+	public function insert(string $collectionName, $filter = [], $values = []) {
+		return $this->wrapperObject->insert($collectionName, $filter, $values);
+	}
+
+	public function delete(string $collectionName, $filter = [], $options = []) {
+		return $this->wrapperObject->delete($collectionName, $filter, $options);
+	}
+
 	public function update(string $collectionName, $filter = [], $newValues = [], $options = []) {
 		return $this->wrapperObject->update($collectionName, $filter, $newValues, $options);
 	}

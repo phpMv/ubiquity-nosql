@@ -136,6 +136,24 @@ class MongoDbWrapper extends AbstractDbNosqlWrapper {
 		return $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, $bulk);
 	}
 
+	public function upsert(string $collectionName, $filter = [], $newValues = [], $options = []) {
+		return $this->update($collectionName, $filter, $newValues, [
+			'upsert' => true
+		] + $options);
+	}
+
+	public function insert(string $collectionName, $values = []) {
+		$bulk = new \MongoDB\Driver\BulkWrite();
+		$bulk->insert($values);
+		return $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, $bulk);
+	}
+
+	public function delete(string $collectionName, $filter = [], $options = []) {
+		$bulk = new \MongoDB\Driver\BulkWrite();
+		$bulk->delete($filter, $options);
+		return $this->dbInstance->executeBulkWrite($this->dbName . '.' . $collectionName, $bulk);
+	}
+
 	public function getTablesName() {
 		$listdatabases = new \MongoDB\Driver\Command([
 			"listCollections" => 1
